@@ -1,0 +1,262 @@
+﻿@{
+    ViewBag.Title = "Modificar";
+}
+<script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+
+
+
+
+<div class="form-inline" align="left">
+    <h4 id="lblH4">Se muestran los primeros 50 alumnos</h4>
+    <label>Congresos:</label><select id="cbCongresos" class="form-control"></select>
+    <label>Buscar:</label><input style="margin:3px;" id="txtBuscar" type="text" class="form-control" placeholder="Matrícula o nombre" />
+    <br />
+    <font size="2" style="margin:5%;">Presionar enter al escribir</font>
+</div>
+
+<div class="form-inline" align="center">
+</div>
+
+<table class="table table-bordered" id="students">
+    <thead>
+        <tr class="table table-bordered">
+            <th scope="col">#</th>
+            <th scope="col">Matrícula</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Carrera</th>
+            <th scope="col">Teléfono</th>
+            <th scope="col">Correo</th>
+            <th scope="col">Modificar / Borrar</th>
+        </tr>
+    </thead>
+    <tbody id="tablaAlumnos"></tbody>
+</table>
+
+<!--Modal donde se pueden modificar los datos-->
+<div class="modal" tabindex="-1" role="dialog" id="modalModificar" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modificar alumno</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="bodyTxtModal">
+                <label>Matrícula:</label><input disabled="disabled" class="form-control" id="txtMatricula" />
+                <label>Nombre:</label><input class="form-control" id="txtNombre" />
+                <label>Carrera:</label><input class="form-control" id="txtCarrera" />
+                <label>Teléfono:</label><input class="form-control" id="txtTelefono" />
+                <label>Correo:</label><input class="form-control" id="txtCorreo" />
+            </div>
+            <div class="modal-footer">
+                <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button id="btnGuardarCambios" type="button" class="btn btn-danger">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+<!-- Modal -->
+<div class="modal fade" id="modalGuardado" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalCenterTitle">Modificar alumno</h2>
+                <button id="btnCerrarConfirmar" type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h4>Se han guardado los cambios</h4>
+            </div>
+            <div class="modal-footer">
+                <button id="btnModalAceptar" type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+<!-- Modal -->
+<div class="modal fade" id="modalConfirmar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalCenterTitle">Confirmación</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Realmente quisiera modificar?
+            </div>
+            <div class="modal-footer">
+                <button id="btnNo" type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button id="btnConfirmar" type="button" class="btn btn-primary">Si</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+<!-- Modal -->
+<div class="modal fade" id="modalBorrar" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalCenterTitle">Borrar alumno</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Realmente quisiera borrar el alumno?
+            </div>
+            <div class="modal-footer">
+                <button id="btnNo" type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button id="btnBorrarAlumno" type="button" class="btn btn-primary">Si</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+
+<script>
+    var apiUrl = "http://webinar.rimgps.com/Consola";
+    //var apiUrl = "https://localhost:44379";
+    $(document).ready(function () {
+        LlenarComboBox();
+        //LlenarTabla(1);
+        $("#txtBuscar").keypress(KeyPressEnter);
+        $("#txtBuscar").focus();
+        //$("#cbCongresos").change(function () {
+        //    LlenarTabla(1);
+        //});
+    });
+    function LlenarComboBox() {
+        $.ajax({
+            type: "POST",
+            url: apiUrl + "/Congreso/ListaCongresos",
+            data: "",
+            success: function (r, s, j) {
+                for (let datos of r) {
+                    $("#cbCongresos").append("<option value=" + datos.Id + ">" + datos.Nombre + "</option>");
+                }
+            },
+            dataType: "Json"
+        });
+    }
+    function ModificarDatosAlumno(matricula_idCongreso) {
+        var a = {
+            Nombre: $("#txtNombre").val(),
+            Carrera: $("#txtCarrera").val(),
+            Telefono: $("#txtTelefono").val(),
+            Correo: $("#txtCorreo").val(),
+            Matricula_IdCongreso: matricula_idCongreso
+        };
+        $.ajax({
+            type: "POST",
+            url: apiUrl + "/Alumno/ModificarDatosAlumno",
+            data: a,
+            success: function (r, s, j) {
+                if (r.startsWith("Ok")) {
+
+                    $("#modalModificar").modal("hide");
+                    $("#modalConfirmar").modal("hide");
+                    $("#modalGuardado").modal("show");
+                    $("#btnCerrarConfirmar").click(function () {
+                        location.reload();
+                    });
+                    $("#btnModalAceptar").click(function () {
+                        location.reload();
+                    });
+                }
+                else {
+                    alert(r);
+                }
+            },
+            dataType: "Text"
+        });
+    }
+    function CargarModificarAlumno(matricula_idCongreso) {
+        var param = { Matricula_IdCongreso: matricula_idCongreso };
+        $.ajax({
+            type: "POST",
+            url: apiUrl + "/Alumno/CargarModificarAlumno",
+            data: param,
+            success: function (r, s, j) {
+                $("#txtMatricula").val(r[0].Matricula);
+                $("#txtNombre").val(r[0].Nombre);
+                $("#txtCarrera").val(r[0].Carrera);
+                $("#txtTelefono").val(r[0].Telefono);
+                $("#txtCorreo").val(r[0].Correo);
+
+                $("#modalModificar").modal("show");
+                $("#btnGuardarCambios").click(function () {
+
+                    $("#modalConfirmar").modal("show");
+                    $("#btnConfirmar").click(function () {
+                        ModificarDatosAlumno(matricula_idCongreso);
+                    });
+                });
+            },
+            dataType: "Json"
+        });
+    }
+    function BorrarAlumno(matricula_idCongreso) {
+        $("#modalBorrar").modal("show");
+        $("#btnBorrarAlumno").click(function () {
+            var param = { Matricula_IdCongreso: matricula_idCongreso };
+            $.ajax({
+                type: "POST",
+                url: apiUrl + "/Alumno/BorrarAlumno",
+                data: param,
+                success: function (r, s, j) {
+                    if (r == "Ok") {
+                        alert("Se ha borrado correctamente");
+                        $("#modalBorrar").modal("hide");
+                        location.reload();
+                    }
+                    else {
+                        alert(r);
+                    }
+                },
+                dataType: "Text"
+            });
+        });
+    }
+    function KeyPressEnter(tecla) {
+        if (tecla.which == 13) {
+            LlenarTabla(2);
+        }
+    }
+    function LlenarTabla(opcion) {
+        var textoBuscar = $("#txtBuscar").val();
+        var idCongreso = $("#cbCongresos").val();
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('GET', apiUrl + '/Alumno/ListaModificarAlumno?Opcion=' + opcion + '&TextoBuscar=' + textoBuscar + "&IdCongreso=" + idCongreso, true);
+        //xhttp.open('GET', '/Alumno/ListaModificarAlumno?TextoBuscar=' + textoBuscar, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let datos = JSON.parse(this.responseText);
+                let tablaAlumnos = document.querySelector('#tablaAlumnos');
+                tablaAlumnos.innerHTML = '';
+                let index = 1;
+                for (let item of datos) {
+                    tablaAlumnos.innerHTML += `
+                            <tr>
+                                <td>${index}</td>
+                                <td>${item.Matricula}</td>
+                                <td>${item.Nombre}</td>
+                                <td>${item.Carrera}</td>
+                                <td>${item.Telefono}</td>
+                                <td>${item.Correo}</td>
+                                <td><button class="btn btn-warning" id="${item.Matricula_IdCongreso}" onclick="CargarModificarAlumno(this.id)">Modificar</button><button onclick="BorrarAlumno(this.id)" class="btn btn-danger" id="${item.Matricula_IdCongreso}">Borrar</button></td>
+                            </tr>
+                        `
+                    index++;
+                }
+            }
+        }
+    }
+</script>

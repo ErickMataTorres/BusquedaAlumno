@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Talleres</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+
+
+    @*<nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #273646;">
+        <a class="navbar-brand" href="#">Cursos / Webinar</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="http://webinar.rimgps.com/registro/Admin/Home/">Inicio</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="http://webinar.rimgps.com/registro/Talleres/">Talleres</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="http://webinar.rimgps.com/registro/Profesores">Instructores</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="http://webinar.rimgps.com/registro/Talleres/Congresos">Congresos</a>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Menú
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Busqueda/Alumnos">Buscar-Imprimir alumno</a>
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Alumno/Modificar">Modificar alumno</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Busqueda/Listas">Imprimir listas</a>
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Busqueda/ListaGeneral">Imprimir lista general</a>
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Profesor/Registro">Registros externos</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown active">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Constancias
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Congreso/RegistroTipoConstancia">Registro de tipo de constancia</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Alumno/Constancia">Constancia alumno</a>
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Congreso/ConstanciaTipo">Constancia por tipo</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Congreso/ImagenConstancia">Configurar imagen constancia de alumno</a>
+                        <a class="dropdown-item" href="http://webinar.rimgps.com/Consola/Congreso/TipoImagenConstancia">Configurar imagen por tipo</a>
+                    </div>
+                </li>
+
+            </ul>
+
+        </div>
+    </nav>*@
+
+
+
+
+    <div class="navbar navbar-expand navbar-fixed-top text-white" style="background-color: #273646;">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="http://webinar.rimgps.com/Consola/Busqueda/Alumnos">Cursos / Webinar</a>
+                    @*@Html.ActionLink("Cursos / Webinar", "Alumnos", "Busqueda", new { area = "" }, new { @class = "navbar-brand" })*@
+                    <ul class="nav navbar-nav">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="/registro/Admin/Home">
+                                Regresar al menú
+                            </a>
+                        </li>
+                    </ul>
+                    @*<li>@Html.ActionLink("Buscar-Imprimir alumno", "Alumnos", "Busqueda")</li>
+        <li>@Html.ActionLink("Modificar alumno","Modificar","Alumno")</li>
+        <li>@Html.ActionLink("Imprimir listas","Listas","Busqueda")</li>
+        <li>@Html.ActionLink("Constancias","Constancia","Alumno")</li>
+        <li>@Html.ActionLink("Registros","Registro","Profesor")</li>
+            </ul>*@
+                </div>
+            </div>
+        </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - RIMGPS</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

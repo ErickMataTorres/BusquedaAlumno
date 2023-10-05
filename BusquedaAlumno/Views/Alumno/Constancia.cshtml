@@ -1,0 +1,142 @@
+﻿@{
+    ViewBag.Title = "Constancia";
+}
+<script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+<script type="text/javascript" src="~/Scripts/jspdf.min.js"></script>
+<div class="form-inline" align="left">
+    <h4 id="lblH4">Se muestran los primeros 50 alumnos</h4>
+    <label>Congreso:</label>
+    <select id="cbCongresos" class="form-control"></select>
+    <label>Buscar: </label><input style="margin:3px;" type="text" class="form-control" id="txtBuscar" placeholder="Matrícula o nombre" />
+    <br />
+    <font size="2" style="margin:37%;">Presionar enter al escribir</font>
+</div>
+
+<div class="form-inline" align="center">
+</div>
+
+<table class="table table-bordered" id="students">
+    <thead>
+        <tr class="table table-bordered">
+            <th scope="col">#</th>
+            <th scope="col">Matrícula</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Carrera</th>
+            <th scope="col">Constancia</th>
+        </tr>
+    </thead>
+    <tbody id="tablaAlumnos"></tbody>
+</table>
+
+<script>
+    var apiUrl = "http://webinar.rimgps.com/Consola";
+        //var apiUrl = "https://localhost:44379";
+    $(document).ready(function () {
+        LlenarComboBox();
+        LlenarTabla(0);
+        $("#cbCongresos").on('change', function () {
+            var valor = $(this).val();
+            LlenarTabla(valor);
+        });
+        $("#txtBuscar").keypress(KeyPressEnter);
+    });
+    function KeyPressEnter(teclaKeyEnter) {
+        if (teclaKeyEnter.which == 13) {
+            var valor = $("#cbCongresos").val();
+            LlenarTabla(valor);
+        }
+    }
+    function LlenarTabla(valorCongreso) {
+        var idCongreso = valorCongreso;
+        var matricula_nombre = $("#txtBuscar").val();
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('GET', apiUrl+'/Alumno/ListaAlumnoConstancia?IdCongreso=' + idCongreso+"&Matricula_Nombre="+matricula_nombre, true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let datos = JSON.parse(this.responseText);
+                let tablaAlumnos = document.querySelector('#tablaAlumnos');
+                tablaAlumnos.innerHTML = '';
+                let index = 1;
+                for (let item of datos) {
+                    tablaAlumnos.innerHTML += `
+                        <tr>
+                            <td>${index}</td>
+                            <td>${item.Matricula}</td>
+                            <td>${item.Nombre}</td>
+                            <td>${item.Carrera}</td>
+                            <td align="center"><button onclick="ImprimirConstancia(this.id)" class="form-control" style="width:100px" id="${item.Matricula+item.IdCongreso}">Descargar</button></td>
+                        </tr>
+                    `
+                    index++;
+                }
+            }
+        }
+    }
+    function LlenarComboBox() {
+        $.ajax({
+            type: "POST",
+            url: apiUrl+"/Congreso/ListaCongresos",
+            data: "",
+            success: function (r, s, j) {
+                for (let datos of r) {
+                    $("#cbCongresos").append("<option value=" + datos.Id + ">" + datos.Nombre + "</option>");
+                }
+            },
+            dataType:"Json"
+        });
+    }
+
+    function convertImgToBase64(url, callback, outputFormat) {
+        var canvas = document.createElement('CANVAS'),
+            ctx = canvas.getContext('2d'),
+            img = new Image;
+        img.crossOrigin = 'Anonymous';
+        img.onload = function () {
+            var dataURL;
+            canvas.height = img.height;
+            canvas.width = img.width;
+            ctx.drawImage(img, 0, 0);
+            dataURL = canvas.toDataURL(outputFormat);
+            callback.call(this, dataURL);
+            canvas = null;
+        };
+        img.src = url;
+    }
+
+
+
+
+    function ImprimirConstancia(matricula_idCongreso) {
+        var matricula_idCongreso = matricula_idCongreso;
+        var param = {
+            Matricula_IdCongreso: matricula_idCongreso,
+            IdTipoImagen: 1
+        };
+        $.ajax({
+            type: "GET",
+            url: apiUrl+"/Alumno/ImprimirConstanciaAlumno",
+            data: param,
+            success: function (r, s, j) {
+                var imgData;
+                convertImgToBase64(apiUrl + r.ImagenUrl, function (base64Img) {
+                    imgData = base64Img;
+                    var doc = new jsPDF();
+                    doc.addImage(imgData, "JPG", 0, 0, 210, 297);
+                    doc.setFontSize(26);
+                    doc.setFont('courier');
+                    //doc.text(101, 234, r[0].Nombre, 90);
+
+                    doc.text(r.MargenNombre, r.AlturaNombre, r.Nombre, r.AnguloNombre);
+
+
+                    //doc.setFontSize(11);
+                    //doc.text(174, 150, r[0].Folio_Const, 90);
+                    doc.save(r.Matricula + " " + r.Nombre + " - Constancia" + ".pdf");
+                });
+            },
+            dataType: "Json"
+        });
+    }
+</script>

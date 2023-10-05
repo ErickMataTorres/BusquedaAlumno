@@ -1,0 +1,471 @@
+﻿@{
+    ViewBag.Title = "ImagenConstancia";
+}
+
+<h1 class="text-center">Imagen Constancia</h1>
+<button class="btn btn-sm btn-primary" onclick="Nuevo();">Nueva constancia</button>
+<table class="table table-sm table-bordered table-hover">
+    <thead>
+        <tr>
+            <th scope="col">Tipo</th>
+            <th scope="col">Congreso</th>
+            <th scope="col">Ángulo de nombre</th>
+            <th scope="col">Altura de nombre</th>
+            <th scope="col">Margen de nombre</th>
+            <th scope="col">Imagen url</th>
+            <th scope="col">Acción</th>
+        </tr>
+    </thead>
+    <tbody id="tbodyTabla">
+    </tbody>
+</table>
+
+
+@*Modales para guardar*@
+
+<div class="modal" tabindex="-1" role="dialog" id="guardarNuevo" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nueva imagen</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data">
+                    <div class="form-inline">
+                        <label>Congresos:</label><select class="form-control" id="cbCongresosNuevo"></select>
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Nombre imagen:</label><input type="text" class="form-control" id="txtNombreImagenNuevo" />
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Ángulo nombre:</label><input type="text" class="form-control" id="txtAnguloNombreNuevo" />
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Altura nombre:</label><input type="text" class="form-control" id="txtAlturaNombreNuevo" />
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Margen nombre:</label><input type="text" class="form-control" id="txtMargenNombreNuevo" />
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Adjuntar imagen:</label><input type="file" class="form-control" id="txtImagenNuevo" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="EjecutarNuevo();">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="guardadoNuevo" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nueva imagen</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="guardadoBodyNuevo">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*Modales para modificar*@
+
+
+<div class="modal" tabindex="-1" role="dialog" id="guardarModificar" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modificar imagen</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data">
+                    <div class="form-inline">
+                        <label>Id:</label><input type="text" class="form-control" readonly="readonly" id="txtIdModificar" />
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Congresos:</label><select class="form-control" id="cbCongresosModificar"></select>
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Nombre imagen:</label><input type="text" class="form-control" id="txtNombreImagenModificar" />
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Ángulo nombre:</label><input type="text" class="form-control" id="txtAnguloNombreModificar" />
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Altura nombre:</label><input type="text" class="form-control" id="txtAlturaNombreModificar" />
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Margen nombre:</label><input type="text" class="form-control" id="txtMargenNombreModificar" />
+                    </div>
+                    <br />
+                    <div class="form-inline">
+                        <label>Adjuntar imagen:</label><input type="file" class="form-control" id="txtImagenModificar" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnEjecutarModificar">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="guardadoModificar" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nueva imagen</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="guardadoBodyModificar">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+@*Modales para borrar*@
+
+<div class="modal" tabindex="-1" role="dialog" id="borrarModal" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Borrar imagen</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                ¿Realmente quisiera borrar la constancia?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="btnEjecutarBorrar">Borrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="borradoModal" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Imagen borrada</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="borradoBodyModal">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<script>
+    var apiUrl = "http://webinar.rimgps.com/Consola";
+    //var apiUrl = "https://localhost:44379";
+
+    window.onload = CargarPagina();
+
+    function CargarPagina() {
+        TablaImagenConstancias();
+    }
+    function TablaImagenConstancias() {
+        const xhttp = new XMLHttpRequest();
+        var param = '?IdTipoImagen=' + 1;
+        xhttp.open('GET', apiUrl + "/Congreso/TablaImagenConstancias" + param, true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let respuesta = JSON.parse(this.responseText);
+                let tbodyTabla = document.querySelector('#tbodyTabla');
+                tbodyTabla.innerHTML = '';
+                for (let datos of respuesta) {
+                    tbodyTabla.innerHTML += `
+                        <tr>
+                            <td>${datos.NombreTipoImagen}</td>
+                            <td>${datos.CongresoNombre}</td>
+                            <td>${datos.AnguloNombre}</td>
+                            <td>${datos.AlturaNombre}</td>
+                            <td>${datos.MargenNombre}</td>
+                            <td>${datos.ImagenUrl}</td>
+                            <td>
+                                <button class='btn btn-sm btn-warning' id='${datos.Id}|${datos.IdCongreso}|${datos.ImagenNombre}|${datos.AnguloNombre}|${datos.AlturaNombre}|${datos.MargenNombre}|${datos.ImagenUrl}' onclick='Modificar(this.id);'>Modificar</button>
+                                <button class='btn btn-sm btn-danger' id='${datos.Id}|${datos.IdCongreso}' onclick='Borrar(this.id);'>Borrar</button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+        }
+    }
+    function ComboBoxCongresosNuevo() {
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('GET', apiUrl + "/Congreso/ListaCongresos", true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let respuesta = JSON.parse(this.responseText);
+                let cbCongresosNuevo = document.querySelector('#cbCongresosNuevo');
+                cbCongresosNuevo.innerHTML = '<option disabled="disabled" selected="selected">Seleccionar</option>';
+                for (let datos of respuesta) {
+                    cbCongresosNuevo.innerHTML += `
+                        <option value='${datos.Id}'>${datos.Nombre}</option>
+                    `;
+                }
+            }
+        }
+    }
+    function Nuevo() {
+        $("#guardarNuevo").modal('show');
+        ComboBoxCongresosNuevo();
+    }
+    function EjecutarNuevo() {
+        //agregar archivos
+        //var files = $('#txtImagenNuevo')[0].files;
+        var files = document.getElementById('txtImagenNuevo').files;
+
+        if (files.size > 1048576) {
+            alert("El archivo pesa mas de 1 mb");
+            //Swal.fire({
+            //    icon: 'warning',
+            //    title: "El archivo pesa mas de 1 mb.",
+            //    showConfirmButton: false,
+            //    timer: 1500
+            //});
+            return;
+        }
+        var formData = new FormData();
+        $.each(files, function (i, files) {
+            formData.append('Files', files);
+        });
+        formData.append("Id", document.getElementById("txtIdModificar").value);
+        formData.append("IdCongreso", document.getElementById("cbCongresosNuevo").value);
+        formData.append('IdTipoImagen', 1);
+        formData.append("ImagenNombre", document.getElementById("txtNombreImagenNuevo").value);
+        formData.append('AnguloNombre', document.getElementById('txtAnguloNombreNuevo').value);
+        formData.append("AlturaNombre", document.getElementById('txtAlturaNombreNuevo').value);
+        formData.append('MargenNombre', document.getElementById('txtMargenNombreNuevo').value);
+
+
+        const http = new XMLHttpRequest();
+        http.open('POST', apiUrl + '/Congreso/GuardarImagenConstancia');
+        http.send(formData);
+        http.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var respuesta = this.responseText;
+                let guardadoBodyNuevo = document.querySelector('#guardadoBodyNuevo');
+                if (respuesta == 'Ok') {
+                    guardadoBodyNuevo.innerHTML = 'Se ha guardado correctamente';
+                    TablaImagenConstancias();
+                }
+                else {
+                    guardadoBodyNuevo.innerHTML = respuesta;
+                }
+                $("#guardarNuevo").modal('hide');
+                $("#guardadoNuevo").modal('show');
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+    function ComboBoxCongresosModificar() {
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('GET', apiUrl + "/Congreso/ListaCongresos", true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let respuesta = JSON.parse(this.responseText);
+                let cbCongresosModificar = document.querySelector('#cbCongresosModificar');
+                cbCongresosModificar.innerHTML = '<option selected="selected" disabled="disabled">Seleccionar</option>';
+                for (let datos of respuesta) {
+                    cbCongresosModificar.innerHTML += `
+                        <option value='${datos.Id}'>${datos.Nombre}</option>
+                    `;
+                }
+            }
+        }
+    }
+    function Modificar(datos) {
+        $("#guardarModificar").modal('show');
+        ComboBoxCongresosModificar();
+
+        var arreglo = [];
+        arreglo = datos.split('|');
+        var id = arreglo[0];
+        var idCongreso = arreglo[1];
+        var imagenNombre = arreglo[2];
+        var anguloNombre = arreglo[3];
+        var alturaNombre = arreglo[4];
+        var margenNombre = arreglo[5];
+        var imagenUrl = arreglo[6];
+
+        document.getElementById('txtIdModificar').value = id;
+        document.getElementById('cbCongresosModificar').value = idCongreso;
+        document.getElementById('txtNombreImagenModificar').value = imagenNombre;
+        document.getElementById('txtAnguloNombreModificar').value = anguloNombre;
+        document.getElementById('txtAlturaNombreModificar').value = alturaNombre;
+        document.getElementById('txtMargenNombreModificar').value = margenNombre;
+        //document.getElementById('txtImagenModificar').value = null;
+
+
+        document.getElementById('btnEjecutarModificar').addEventListener('click', function () {
+            EjecutarModificar();
+        }, false);
+
+    }
+    function EjecutarModificar() {
+        //agregar archivos
+        //var files = $('#txtImagenNuevo')[0].files;
+        var files = document.getElementById('txtImagenModificar').files;
+
+        if (files.size > 1048576) {
+            alert("El archivo pesa mas de 1 mb");
+            //Swal.fire({
+            //    icon: 'warning',
+            //    title: "El archivo pesa mas de 1 mb.",
+            //    showConfirmButton: false,
+            //    timer: 1500
+            //});
+            return;
+        }
+        var formData = new FormData();
+        $.each(files, function (i, files) {
+            formData.append('Files', files);
+        });
+        formData.append('Id', document.getElementById('txtIdModificar').value);
+        formData.append('IdTipoImagen', 1);
+        formData.append("IdCongreso", document.getElementById("cbCongresosModificar").value);
+        formData.append("ImagenNombre", document.getElementById("txtNombreImagenModificar").value);
+        formData.append('AnguloNombre',document.getElementById('txtAnguloNombreModificar').value);
+        formData.append("AlturaNombre", document.getElementById('txtAlturaNombreModificar').value);
+        formData.append('MargenNombre', document.getElementById('txtMargenNombreModificar').value);
+
+
+        const http = new XMLHttpRequest();
+        http.open('POST', apiUrl + '/Congreso/GuardarImagenConstancia');
+        http.send(formData);
+        http.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var respuesta = this.responseText;
+                let guardadoBodyNuevo = document.querySelector('#guardadoBodyModificar');
+                if (respuesta == 'Ok') {
+                    guardadoBodyNuevo.innerHTML = 'Se ha modificado correctamente';
+                    TablaImagenConstancias();
+                }
+                else {
+                    guardadoBodyNuevo.innerHTML = respuesta;
+                }
+                $("#guardarModificar").modal('hide');
+                $("#guardadoModificar").modal('show');
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+    function Borrar(datos) {
+        $("#borrarModal").modal('show');
+
+        var arreglo = [];
+        arreglo = datos.split('|');
+        var id = arreglo[0];
+        var idCongreso = arreglo[1];
+
+        document.getElementById('btnEjecutarBorrar').addEventListener('click', function () {
+
+            const http = new XMLHttpRequest();
+            var params = '?Id='+id+'&IdTipoImagen='+ 1 +'&IdCongreso='+idCongreso;
+            http.open('POST', apiUrl + '/Congreso/BorrarImagenConstancia'+params);
+            http.send();
+            http.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var respuesta = this.responseText;
+                    let borradoBodyModal = document.querySelector('#borradoBodyModal');
+                    if (respuesta == 'Ok') {
+                        borradoBodyModal.innerHTML = 'Se ha borrado correctamente';
+                        TablaImagenConstancias();
+                    }
+                    else {
+                        borradoBodyModal.innerHTML = respuesta;
+                    }
+                    $("#borrarModal").modal('hide');
+                    $("#borradoModal").modal('show');
+                }
+            }
+
+        }, false);
+
+
+    }
+
+
+
+</script>

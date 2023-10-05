@@ -1,0 +1,310 @@
+﻿@{
+    ViewBag.Title = "RegistroTipoConstancia";
+}
+
+
+<style>
+    th {
+        text-align: center;
+    }
+</style>
+
+<h1 style="text-align:center;">Registro tipo constancia</h1>
+<button class="btn btn-sm btn-primary" onclick="Nuevo();">Nuevo tipo</button>
+
+<table class="table table-bordered text-center" id="tablaTipoConstancias">
+    <thead>
+        <tr class="table table-bordered">
+            <th scope="col">Id</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Modificar / Borrar</th>
+        </tr>
+    </thead>
+    <tbody id="tbodyTipoConstancias"></tbody>
+</table>
+
+<div class="modal" tabindex="-1" role="dialog" id="modalGuardar" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Nuevo tipo de constancia</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-inline">
+                    <label>Id:</label><input type="text" class="form-control" id="txtNuevoId" placeholder="..." value="Nuevo" readonly="readonly" />
+                </div>
+                <br />
+                <div class="form-inline">
+                    <label>Nombre:</label><input type="text" class="form-control" id="txtNuevoNombre" placeholder="..." />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="EjecutarNuevo();">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="modalGuardado" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloGuardado"></h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="bodyGuardado">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal" tabindex="-1" role="dialog" id="modalModificar" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modificar tipo de constancia</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-inline">
+                    <label>Id:</label><input type="text" class="form-control" id="txtModificarId" placeholder="..." readonly="readonly" />
+                </div>
+                <br />
+                <div class="form-inline">
+                    <label>Nombre:</label><input type="text" class="form-control" id="txtModificarNombre" placeholder="..." />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="EjecutarModificar();">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="modalModificado" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloModificado"></h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="bodyModificado">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<div class="modal" tabindex="-1" role="dialog" id="modalBorrar" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Borrar tipo de constancia</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <b>¿Realmente quisiera borrar el tipo de constancia?</b>
+                <br />
+                <br />
+                <div class="form-inline">
+                    <label>Id:</label><input type="text" class="form-control" id="txtBorrarId" placeholder="..." readonly="readonly" />
+                </div>
+                <br />
+                <div class="form-inline">
+                    <label>Nombre:</label><input type="text" class="form-control" id="txtBorrarNombre" placeholder="..." readonly="readonly"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" onclick="EjecutarBorrar();">Borrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" id="modalBorrado" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="tituloBorrado"></h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="bodyBorrado">
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    var apiUrl = "http://webinar.rimgps.com/Consola";
+    //var apiUrl = "https://localhost:44379";
+
+    window.onload = CargarPagina();
+    function CargarPagina() {
+        TablaTipoConstancias();
+    }
+
+    function TablaTipoConstancias() {
+        const xhttp = new XMLHttpRequest();
+        var param = '?Parametro=0';
+        xhttp.open('GET', apiUrl + '/Congreso/ConsultarTipoConstancia' + param, true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let datos = JSON.parse(this.responseText);
+                let tbodyTipoConstancias = document.querySelector('#tbodyTipoConstancias');
+                tbodyTipoConstancias.innerHTML = '';
+                for (let item of datos) {
+                    tbodyTipoConstancias.innerHTML += `
+                        <tr>
+                            <td>${item.Id}</td>
+                            <td>${item.Nombre}</td>
+                            <td align="center">
+                                <button onclick="Modificar(this.id);" class="btn btn-sm btn-warning" style="width:100px" id="${item.Id}|${item.Nombre}">Modificar</button>
+                                <button onclick="Borrar(this.id);" class="btn btn-sm btn-danger" style="width:100px" id="${item.Id}|${item.Nombre}">Borrar</button>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+        }
+    }
+
+    function Nuevo() {
+        $("#modalGuardar").modal('show');
+    }
+    function EjecutarNuevo() {
+        const xhttp = new XMLHttpRequest();
+        var id = document.getElementById('txtNuevoId').value;
+        var nombre = document.getElementById('txtNuevoNombre').value;
+        var param = '?Id=' + id + '&Nombre=' + nombre;
+        xhttp.open('POST', apiUrl + '/Congreso/GuardarTipoConstancia' + param, true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let respuesta = this.responseText;
+                let tituloGuardado = document.querySelector('#tituloGuardado');
+                let bodyGuardado = document.querySelector('#bodyGuardado');
+                if (respuesta == 'Ok') {
+                    tituloGuardado.innerHTML = 'Guardado';
+                    bodyGuardado.innerHTML = 'Se ha guardado correctamente';
+                    TablaTipoConstancias();
+                } else {
+                    tituloGuardado.innerHTML = 'Error';
+                    bodyGuardado.innerHTML = respuesta;
+                }
+                $("#modalGuardar").modal('hide');
+                $("#modalGuardado").modal('show');
+            }
+        }
+    }
+
+    function Modificar(datos) {
+        $("#modalModificar").modal('show');
+        var arreglo = [];
+        arreglo = datos.split('|');
+        var id = arreglo[0];
+        var nombre = arreglo[1];
+        document.getElementById('txtModificarId').value = id;
+        document.getElementById('txtModificarNombre').value = nombre;
+    }
+
+    function EjecutarModificar() {
+        const xhttp = new XMLHttpRequest();
+        var id = document.getElementById('txtModificarId').value;
+        var nombre = document.getElementById('txtModificarNombre').value;
+        var param = '?Id=' + id + '&Nombre=' + nombre;
+        xhttp.open('POST', apiUrl + '/Congreso/GuardarTipoConstancia' + param, true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let respuesta = this.responseText;
+                let tituloModificado = document.querySelector('#tituloModificado');
+                let bodyModificado = document.querySelector('#bodyModificado');
+                if (respuesta == 'Ok') {
+                    tituloModificado.innerHTML = 'Modificado';
+                    bodyModificado.innerHTML = 'Se ha modificado correctamente';
+                    TablaTipoConstancias();
+                } else {
+                    tituloModificado.innerHTML = 'Error';
+                    bodyModificado.innerHTML = respuesta;
+                }
+                $("#modalModificar").modal('hide');
+                $("#modalModificado").modal('show');
+            }
+        }
+    }
+    function Borrar(datos) {
+        $("#modalBorrar").modal('show');
+        var arreglo = [];
+        arreglo = datos.split('|');
+        var id = arreglo[0];
+        var nombre = arreglo[1];
+        document.getElementById('txtBorrarId').value = id;
+        document.getElementById('txtBorrarNombre').value = nombre;
+    }
+    function EjecutarBorrar() {
+        const xhttp = new XMLHttpRequest();
+        var id = document.getElementById('txtBorrarId').value;
+        var param = '?Id=' + id;
+        xhttp.open('POST', apiUrl + '/Congreso/BorrarTipoConstancia' + param, true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let respuesta = this.responseText;
+                let tituloBorrado = document.querySelector('#tituloBorrado');
+                let bodyBorrado = document.querySelector('#bodyBorrado');
+                if (respuesta == 'Ok') {
+                    tituloBorrado.innerHTML = 'Borrado';
+                    bodyBorrado.innerHTML = 'Se ha borrado correctamente';
+                    TablaTipoConstancias();
+                } else {
+                    tituloBorrado.innerHTML = 'Error';
+                    bodyBorrado.innerHTML = respuesta;
+                }
+                $("#modalBorrar").modal('hide');
+                $("#modalBorrado").modal('show');
+            }
+        }
+    }
+
+
+</script>

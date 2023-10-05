@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "EntregaKit";
+}
+<script type="text/javascript" src="~/Scripts/jquery-3.3.1.min.js"></script>
+<h2 style="text-align:center;">Entrega de kits</h2>
+<div class="form-inline" align="left">
+    <h4 id="lblH4">Se muestran los primeros 50 alumnos</h4>
+    <label>Congresos:</label><select id="cbCongresos" class="form-control"></select>
+    <label>Buscar: </label><input style="margin:3px;" id="txtBuscar" type="text" class="form-control" placeholder="Matrícula o nombre" />
+    <br />
+    <font size="2" style="margin:5%;">Presionar enter al escribir</font>
+</div>
+<table class="table table-bordered" id="students">
+    <thead>
+        <tr class="table table-bordered">
+            <th scope="col">#</th>
+            <th scope="col">Matrícula</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Carrera</th>
+            <th scope="col">Taller</th>
+            <th scope="col">Horario</th>
+            <th scope="col">Entregado</th>
+        </tr>
+    </thead>
+    <tbody id="tablaAlumnos"></tbody>
+</table>
+
+<script>
+    var apiUrl = "http://webinar.rimgps.com/Consola";
+        //var apiUrl = "https://localhost:44379";
+    $(document).ready(function () {
+        LlenarComboBox();
+    });
+        function LlenarComboBox() {
+        $.ajax({
+            type: "POST",
+            url: apiUrl + "/Congreso/ListaCongresos",
+            data: "",
+            success: function (r, s, j) {
+                for (let datos of r) {
+                    $("#cbCongresos").append("<option value=" + datos.Id + ">" + datos.Nombre + "</option>");
+                }
+            },
+            dataType: "Json"
+        });
+    }
+        function LlenarTabla(opcion) {
+        var textoBuscar = $("#txtBuscar").val();
+        var idCongreso = 1002/*$("#cbCongresos").val()*/;
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('GET', apiUrl + '/Alumno/ListaModificarAlumno?Opcion=' + opcion + '&TextoBuscar=' + textoBuscar + "&IdCongreso=" + idCongreso/*idCongreso*/, true);
+        //xhttp.open('GET', '/Alumno/ListaModificarAlumno?TextoBuscar=' + textoBuscar, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let datos = JSON.parse(this.responseText);
+                let tablaAlumnos = document.querySelector('#tablaAlumnos');
+                tablaAlumnos.innerHTML = '';
+                let index = 1;
+                for (let item of datos) {
+                    tablaAlumnos.innerHTML += `
+                            <tr>
+                                <td>${index}</td>
+                                <td>${item.Matricula}</td>
+                                <td>${item.Nombre}</td>
+                                <td>${item.Carrera}</td>
+                                <td>${item.Telefono}</td>
+                                <td>${item.Correo}</td>
+                                <td><div class="form-check"><input class="form-check-input" type="checkbox" id="${item.Matricula_IdCongreso}></div>"</td>
+                            </tr>
+                        `
+                    index++;
+                }
+            }
+        }
+    }
+</script>

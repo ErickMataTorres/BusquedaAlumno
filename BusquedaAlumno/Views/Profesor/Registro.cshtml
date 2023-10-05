@@ -1,0 +1,424 @@
+﻿@{
+    ViewBag.Title = "Profesor";
+}
+<script type="text/javascript" src="~/Scripts/jquery-3.3.1.js"></script>
+<div class="form-inline" align="left">
+    <label>Congresos:</label><select id="cbCongresos" class="form-control"></select>
+    <label>Buscar:</label><input style="margin:3px; width:400px;" id="txtBuscar" type="text" class="form-control" placeholder="Número de empleado o nombre" />
+    <font size="2">Presionar enter al escribir</font>
+
+
+    <button id="btnRegistrar" class="btn btn-success">Registrar</button>
+    <button id="btnRegistrarLista" class="btn btn-success" onclick="ModalGuardarLista();">Registrar lista</button>
+
+</div>
+
+<table class="table table-bordered" id="teachers">
+    <thead>
+        <tr class="table table-bordered">
+            <th scope="col">#</th>
+            <th scope="col">Matrícula / No. empleado</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Carrera</th>
+            <th scope="col">Constancia</th>
+        </tr>
+    </thead>
+    <tbody id="tablaProfesores"></tbody>
+</table>
+
+<!--Modal donde se pueden registrar-->
+<div class="modal" tabindex="-1" role="dialog" id="modalGuardar" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Guardar profesor</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="bodyTxtModal">
+
+
+
+                <select id="cbCongresosRegistro" class="form-control"></select>
+                <label>Matrícula / Número de empleado:</label><input class="form-control" id="txtNumeroEmpleado" />
+                <label>Nombre:</label><input class="form-control" id="txtNombre" />
+                <label>Carrera:</label><input class="form-control" id="txtCarrera" />
+                <label>Teléfono:</label><input class="form-control" id="txtTelefono" />
+                <label>Correo:</label><input class="form-control" id="txtCorreo" />
+            </div>
+            <div class="modal-footer">
+                <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button id="btnGuardar" type="button" class="btn btn-danger">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+<!--Modal donde se pueden modificar los datos-->
+<div class="modal" tabindex="-1" role="dialog" id="modalModificar" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Modificar profesor</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="bodyTxtModal">
+                <select id="cbCongresosModificar" disabled="disabled" class="form-control"></select>
+                <label>Matrícula / Número de empleado:</label><input class="form-control" disabled="disabled" id="txtNumeroEmpleadoModificar" />
+                <label>Nombre:</label><input class="form-control" id="txtNombreModificar" />
+                <label>Carrera:</label><input class="form-control" id="txtCarreraModificar" />
+                <label>Teléfono:</label><input class="form-control" id="txtTelefonoModificar" />
+                <label>Correo:</label><input class="form-control" id="txtCorreoModificar" />
+            </div>
+            <div class="modal-footer">
+                <button id="btnCancelar" type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button id="btnModificarProfesor" type="button" class="btn btn-danger">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+<!-- Modal -->
+<div class="modal fade" id="modalGuardado" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalCenterTitle">Guardado</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>Se ha guardado correctamente</h4>
+            </div>
+            <div class="modal-footer">
+                <button id="btnAceptar" type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+<!--Modal donde se pueden modificar los datos-->
+<div class="modal" tabindex="-1" role="dialog" id="modalBorrar" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Borrar profesor</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="bodyTxtModal">
+                ¿Realmente quisiera borrar el profesor?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <button id="btnBorrarProfesor" type="button" class="btn btn-danger">Si</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+<!-- Modal -->
+<div class="modal fade" id="modalBorrado" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalCenterTitle">Borrado</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="btnCerrarBorrado">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>Se ha borrado correctamente</h4>
+            </div>
+            <div class="modal-footer">
+                <button id="btnAceptarBorrado" type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+<!--Modal donde se pueden registrar por lista-->
+<div class="modal" tabindex="-1" role="dialog" id="modalGuardarLista" align="center">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Guardar por lista</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="bodyTxtModal">
+                <form enctype="multipart/form-data">
+
+                    <select id="cbCongresosRegistroLista" class="form-control"></select>
+                    <label>Agregar nombres:</label>
+
+                    <textarea id="txtListaNombres" class="form-control"></textarea>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                <button id="btnGuardarLista" type="button" class="btn btn-danger" onclick="GuardarLista();">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+<!-- Modal -->
+<div class="modal fade" id="modalGuardadoLista" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="exampleModalCenterTitle">Guardado</h2>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" style="text-align:center">
+                <h4>Se han guardado correctamente</h4>
+            </div>
+            <div class="modal-footer">
+                <button id="btnAceptar" type="button" class="btn btn-secondary" data-dismiss="modal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!---->
+
+
+
+<script>
+    var apiUrl = "http://webinar.rimgps.com/Consola";
+    //var apiUrl = "https://localhost:44379";
+    $(document).ready(function () {
+        $("#btnRegistrar").click(function () {
+            $("#modalGuardar").modal("show");
+            LlenarComboBox(1);
+        });
+        LlenarComboBox(0);
+        $("#btnGuardar").click(Guardar);
+        $("#btnModificarProfesor").click(Modificar);
+        LlenarTabla(0);
+        $("#txtBuscar").keypress(KeyPressEnter);
+        $("#cbCongresos").on("change", function () {
+            var idCongreso = $(this).val();
+            LlenarTabla(idCongreso);
+        });
+    });
+    function KeyPressEnter(teclaEnter) {
+        if (teclaEnter.which == 13) {
+            var idCongreso = $("#cbCongresos").val();
+            LlenarTabla(idCongreso);
+        }
+    }
+    function Guardar() {
+        var params = {
+            NumeroEmpleado: $("#txtNumeroEmpleado").val(),
+            Nombre: $("#txtNombre").val(),
+            Carrera: $("#txtCarrera").val(),
+            Telefono: $("#txtTelefono").val(),
+            Correo: $("#txtCorreo").val(),
+            IdCongreso: $("#cbCongresosRegistro").val()
+        };
+        $.ajax({
+            type: "POST",
+            url: apiUrl + "/Profesor/GuardarProfesorConstancia",
+            data: params,
+            success: function (r, s, j) {
+                if (r.startsWith("Ok")) {
+                    $("#modalGuardado").modal("show");
+                    $("#btnAceptar").click(function () {
+                        location.reload();
+                    });
+                }
+            },
+            dataType: "Text"
+        });
+    }
+    function Modificar() {
+        var param = {
+            NumeroEmpleado: $("#txtNumeroEmpleadoModificar").val(),
+            Nombre: $("#txtNombreModificar").val(),
+            Carrera: $("#txtCarreraModificar").val(),
+            Telefono: $("#txtTelefonoModificar").val(),
+            Correo: $("#txtCorreoModificar").val(),
+            IdCongreso: $("#cbCongresosModificar").val(),
+            NumeroEmpleado_IdCongreso: ($("#txtNumeroEmpleadoModificar").val() + $("#cbCongresosModificar").val())
+        };
+        $.ajax({
+            type: "POST",
+            url: apiUrl + "/Profesor/ModificarProfesorConstancia",
+            data: param,
+            success: function (r, s, j) {
+                if (r.startsWith("Ok")) {
+                    $("#modalGuardado").modal("show");
+                    $("#btnAceptar").click(function () {
+                        location.reload();
+                    });
+
+                }
+            },
+            dataType: "Text"
+        });
+    }
+    function CargarModificarProfesorConstancia(numeroEmpleado_idCongreso) {
+        LlenarComboBox(2);
+        var param = {
+            NumeroEmpleado_IdCongreso: numeroEmpleado_idCongreso
+        };
+        $.ajax({
+            type: "POST",
+            url: apiUrl + "/Profesor/ListaCargarModificarProfesorConstancia",
+            data: param,
+            success: function (r, s, j) {
+                $("#txtNumeroEmpleadoModificar").val(r[0].NumeroEmpleado);
+                $("#txtNombreModificar").val(r[0].Nombre);
+                $("#txtCarreraModificar").val(r[0].Carrera);
+                $("#txtTelefonoModificar").val(r[0].Telefono);
+                $("#txtCorreoModificar").val(r[0].Correo);
+                $("#cbCongresosModificar").val(r[0].IdCongreso);
+                $("#modalModificar").modal("show");
+            },
+            dataType: "Json"
+        });
+    }
+    function LlenarTabla(valorCongreso) {
+        var idCongreso = valorCongreso;
+        var numeroEmpleado_nombre = $("#txtBuscar").val();
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('GET', apiUrl + '/Profesor/ListaRegistroProfesor?IdCongreso=' + idCongreso + "&NumeroEmpleado_Nombre=" + numeroEmpleado_nombre, true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+        xhttp.send();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let datos = JSON.parse(this.responseText);
+                let tablaProfesores = document.querySelector('#tablaProfesores');
+                tablaProfesores.innerHTML = '';
+                let index = 1;
+                for (let item of datos) {
+                    tablaProfesores.innerHTML += `
+                        <tr>
+                            <td>${index}</td>
+                            <td>${item.NumeroEmpleado}</td>
+                            <td>${item.Nombre}</td>
+                            <td>${item.Carrera}</td>
+                            <td class="form-inline" align="center"><button class="btn btn-primary" style="width:100px" id="${item.NumeroEmpleado + item.IdCongreso}" onclick="CargarModificarProfesorConstancia(this.id)">Modificar</button><button style="margin:3px" class="btn btn-danger" style="width:100px" id="${item.NumeroEmpleado + item.IdCongreso}" onclick="Borrar(this.id)">Borrar</button></td>
+                        </tr>
+                    `
+                    index++;
+                }
+            }
+        }
+    }
+    function LlenarComboBox(indiceLlenar) {
+        $.ajax({
+            type: "POST",
+            url: apiUrl + "/Congreso/ListaCongresos",
+            data: "",
+            success: function (r, s, j) {
+                if (indiceLlenar == 0) {
+                    for (let datos of r) {
+                        $("#cbCongresos").append("<option value=" + datos.Id + ">" + datos.Nombre + "</option>");
+                    }
+                }
+                else {
+                    if (indiceLlenar == 1) {
+                        if ($("#cbCongresosRegistro").text() == null || $("#cbCongresosRegistro").text() == "") {
+                            for (let datos of r) {
+                                $("#cbCongresosRegistro").append("<option value=" + datos.Id + ">" + datos.Nombre + "</option>");
+                            }
+                        }
+                    }
+                    else {
+                        if (indiceLlenar == 2) {
+                            if ($("#cbCongresosRegistroLista").text() == null || $("#cbCongresosRegistroLista").text() == "") {
+                                for (let datos of r) {
+                                    $("#cbCongresosRegistroLista").append("<option value=" + datos.Id + ">" + datos.Nombre + "</option>");
+                                }
+                            }
+                        } else {
+
+                            if ($("#cbCongresosModificar").text() == null || $("#cbCongresosModificar").text() == "") {
+                                for (let datos of r) {
+                                    $("#cbCongresosModificar").append("<option value=" + datos.Id + ">" + datos.Nombre + "</option>");
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            dataType: "Json"
+        });
+    }
+    function Borrar(numeroEmpleado_idCongreso) {
+        $("#modalBorrar").modal("show");
+        $("#btnBorrarProfesor").click(function () {
+            var param = {
+                NumeroEmpleado_IdCongreso: numeroEmpleado_idCongreso
+            };
+            $.ajax({
+                type: "POST",
+                url: apiUrl + "/Profesor/BorrarProfesorConstancia",
+                data: param,
+                success: function (r, s, j) {
+                    if (r.startsWith("Ok")) {
+                        $("#modalBorrar").modal("hide");
+                        $("#modalBorrado").modal("show");
+                        LlenarTabla(0);
+                    }
+                    else {
+                        alert(r);
+                    }
+                },
+                dataType: "Text"
+            });
+        });
+    }
+
+    const ModalGuardarLista = () => {
+        $("#modalGuardarLista").modal("show");
+        LlenarComboBox(2);
+    }
+
+    const GuardarLista = () => {
+
+        const xhttp = new XMLHttpRequest();
+        xhttp.open('POST', apiUrl + '/Profesor/GuardarRegistroLista', true);
+        //xhttp.open('GET', '/Busqueda/ListaAlumno?Matricula=' + matricula, true);
+
+        xhttp.setRequestHeader("Content-Type", "application/json");
+
+        let arregloNombres = [];
+        let txtListaNombres = document.getElementById("txtListaNombres").value;
+
+        arregloNombres = txtListaNombres.split("\n");
+
+        let parametros = {
+            idCongreso: document.getElementById("cbCongresos").value,
+            listaNombres: arregloNombres
+        };
+        xhttp.send(JSON.stringify(parametros));
+
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                let r = this.responseText;
+                if (r == "Ok") {
+                    $("#modalGuardarLista").modal("hide");
+                    $("#modalGuardadoLista").modal("show");
+                    document.getElementById("txtListaNombres").value = "";
+                    LlenarTabla(0);
+                } else {
+                    alert(r);
+                }
+            }
+        }
+
+    }
+
+</script>
